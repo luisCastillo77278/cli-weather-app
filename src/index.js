@@ -9,23 +9,28 @@ const main = async () => {
 
     switch (option) {
       case 1:
-        // mostrar mensaje para que la persona escriba
         const pleace = await ReadInput("City: ");
-        // buscar la ciudad que la persona escriba
-        const pleaces = await search.City(pleace);
-        // seleccionar los lugares
-        const id = await ListPleaces(pleaces);
-        console.log({ id });
 
-        const city = pleaces.find((item) => {
-          return item.id === id;
-        });
+        const pleaces = await search.City(pleace);
+
+        const id = await ListPleaces(pleaces);
+
+        if (id === 0) continue;
+
+        const city = pleaces.find((item) =>
+          item.id === id
+        );
+
+        const weather = await search.weatherCity(city.lat, city.lng);
+
         console.log("\nInformation of the city".green);
-        // obtener los datos del clima del lugar
-        // mostrar resultados
-        console.log(`Ciudad: `, city.name);
+        console.log(`City: `, city.name);
         console.log(`Lat: `, city.lat);
         console.log(`Lng: `, city.lng);
+        console.log('Temp: ', weather.temp)
+        console.log('Temp min: ', weather.min);
+        console.log('Temp max: ', weather.max);
+        console.log('Description: ', weather.desc);
         break;
     }
 

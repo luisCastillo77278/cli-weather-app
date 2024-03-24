@@ -1,4 +1,5 @@
 import { searchMapbox } from "../services/search_mapbox.services.js";
+import { weatherPlace } from "../services/weather.service.js";
 
 class Search {
   historis = [];
@@ -18,6 +19,20 @@ class Search {
       }));
     } catch (err) {
       return null;
+    }
+  }
+
+  async weatherCity(lat, lng) {
+    try {
+      const { weather, main } = await weatherPlace({ lat, lng });
+      return {
+        desc: weather[0].description,
+        min: main.temp_min,
+        max: main.temp_max,
+        temp: main.temp
+      };
+    } catch (err) {
+      throw err;
     }
   }
 }
