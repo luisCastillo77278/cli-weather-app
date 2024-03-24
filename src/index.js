@@ -1,4 +1,4 @@
-import { Menu, Pause, ReadInput, ListPleaces } from "./helpers/inquirer.js";
+import { Menu, Pause, ReadInput, ListPleaces } from "./utilities/inquirer.js";
 import Search from "./models/Search.js";
 
 const main = async () => {
@@ -15,11 +15,13 @@ const main = async () => {
 
         const id = await ListPleaces(pleaces);
 
-        if (id === 0) continue;
+        if (id === '0') continue;
 
         const city = pleaces.find((item) =>
           item.id === id
         );
+
+        await search.saveHistoryCity(city.name);
 
         const weather = await search.weatherCity(city.lat, city.lng);
 
@@ -31,6 +33,16 @@ const main = async () => {
         console.log('Temp min: ', weather.min);
         console.log('Temp max: ', weather.max);
         console.log('Description: ', weather.desc);
+        break;
+
+      case 2:
+        search.Historis.forEach((city, i) => {
+          console.log(`${i + 1} ${city}`);
+        })
+        break
+
+      case 0:
+        console.log("Good bye....".red);
         break;
     }
 

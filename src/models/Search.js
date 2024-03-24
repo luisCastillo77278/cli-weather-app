@@ -1,11 +1,28 @@
 import { searchMapbox } from "../services/search_mapbox.services.js";
 import { weatherPlace } from "../services/weather.service.js";
+import { FileStorageService } from "../utilities/fileStorage.js";
 
 class Search {
   historis = [];
 
   constructor() {
-    // TODO: leer de la db json
+    FileStorageService.fileName = 'db'
+    this.initDB().then();
+  }
+
+  get Historis() {
+    return this.historis.map(item => {
+      const words = item.split(' ');
+      return words.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    })
+  }
+
+  async initDB() {
+    try {
+      this.historis = await FileStorageService.readData();
+    } catch (err) {
+      throw err;
+    }
   }
 
   async City(place = "") {
@@ -31,6 +48,17 @@ class Search {
         max: main.temp_max,
         temp: main.temp
       };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async saveHistoryCity(city) {
+    try {
+      if (this.historis.includes(city.toLowerCase())) return;
+      this.historis = this.historis.slice(0, 5);
+      this.historis.unshift(city.toLowerCase());
+      await FileStorageService.saveData(this.historis);
     } catch (err) {
       throw err;
     }
